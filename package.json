@@ -1,7 +1,7 @@
 {
-  "name": "obsidian-sample-plugin",
+  "name": "paper2obsidian",
   "version": "0.12.0",
-  "description": "This is a sample plugin for Obsidian (https://obsidian.md)",
+  "description": "MathPix OCR for Obsidian notes!",
   "main": "main.js",
   "scripts": {
     "dev": "rollup --config rollup.config.js -w",
