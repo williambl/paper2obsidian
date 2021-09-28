@@ -50,18 +50,43 @@ export default class P2OPlugin extends Plugin {
 }
 
 class CameraModal extends Modal {
+	closeFunc: () => void = null
+
 	constructor(app: App) {
 		super(app);
 	}
 
 	onOpen() {
 		let {contentEl} = this;
-		contentEl.setText('Woah!');
+		const button = contentEl.createEl('button', {text: 'Take Photo'});
+		contentEl.createEl('br');
+		const videoElement = contentEl.createEl('video', {attr: {'autoplay': true}});
+		const canvas = contentEl.createEl('canvas');
+		const canvasContext = canvas.getContext('2d');
+
+		navigator.mediaDevices.getUserMedia({video: true})
+			.then(stream => {
+				videoElement.srcObject = stream;
+				this.closeFunc = () => {
+					stream.getTracks().forEach(track => track.stop());
+				}
+			}).catch(() => {
+			alert('could not connect stream');
+		});
+
+		button.addEventListener('click', () => {
+			canvas.width = videoElement.videoWidth;
+			canvas.height = videoElement.videoHeight;
+			console.log(canvas)
+			canvasContext.drawImage(videoElement, 0, 0, videoElement.width, videoElement.height);
+			new Notice(canvas.toDataURL());
+		});
 	}
 
 	onClose() {
 		let {contentEl} = this;
 		contentEl.empty();
+		this.closeFunc();
 	}
 }
 
